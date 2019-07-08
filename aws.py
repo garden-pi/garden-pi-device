@@ -49,6 +49,15 @@ myShadowClient.connect()
 myDeviceShadow = myShadowClient.createShadowHandlerWithName(
   SHADOW_HANDLER, True)
 
+
+# initialize GPIO
+GPIO.setwarnings(False)
+GPIO.setmode(GPIO.BCM)
+GPIO.cleanup()
+
+# read data using pin 17
+instance = dht11.DHT11(pin=17)
+
 # Keep generating random test data until this script 
 # stops running.
 # To stop running this script, press Ctrl+C.
