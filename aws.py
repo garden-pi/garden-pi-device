@@ -68,6 +68,7 @@ while True:
   data = {
     "state": {
       "reported": {
+	"plant": "actual_rpi",
         "temperature": temperature,
         "humidity": humidity
       }
