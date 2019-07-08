@@ -12,17 +12,17 @@ HOST_NAME = "a2yfgt4hfda289-ats.iot.us-east-2.amazonaws.com"
 
 # The relative path to the correct root CA file for &IoT;, 
 # which you have already saved onto this device.
-ROOT_CA = "./garden-pi-device/aws/AmazonRootCA1.pem"
+ROOT_CA = "./aws/AmazonRootCA1.pem"
 
 # The relative path to your private key file that 
 # &IoT; generated for this device, which you 
 # have already saved onto this device.
-PRIVATE_KEY = "./garden-pi-device/aws/e3146f33fd-private.pem.key"
+PRIVATE_KEY = "./aws/e3146f33fd-private.pem.key"
 
 # The relative path to your certificate file that 
 # &IoT; generated for this device, which you 
 # have already saved onto this device.
-CERT_FILE = "./garden-pi-device/aws/e3146f33fd-certificate.pem.crt"
+CERT_FILE = "./aws/e3146f33fd-certificate.pem.crt"
 
 # A programmatic shadow handler name prefix.
 SHADOW_HANDLER = "MyRPi"
