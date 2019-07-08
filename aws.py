@@ -49,7 +49,6 @@ myShadowClient.connect()
 myDeviceShadow = myShadowClient.createShadowHandlerWithName(
   SHADOW_HANDLER, True)
 
-
 # initialize GPIO
 GPIO.setwarnings(False)
 GPIO.setmode(GPIO.BCM)
@@ -67,10 +66,10 @@ while True:
   humidity = result.humidity
 
   data = {
-    state: {
-      reported: {
-        temperature: temperature,
-        humidity: humidity
+    "state": {
+      "reported": {
+        "temperature": temperature,
+        "humidity": humidity
       }
     }
   }
