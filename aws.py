@@ -1,7 +1,7 @@
 from AWSIoTPythonSDK.MQTTLib import AWSIoTMQTTShadowClient
 import datetime, time, json
 import RPi.GPIO as GPIO
-from packages.DHT11_Python import dht11
+from packages.dht11 import dht11
 
 # A random programmatic shadow client ID.
 SHADOW_CLIENT = "myShadowClient2"
