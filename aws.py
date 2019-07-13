@@ -101,7 +101,8 @@ while True:
         # update lights
         update_leds(moisture_sensor.value)
 
-        print(f"{aws_log_interval - aws_log_timer} seconds till transmit", end="\r")
+        print("{0} seconds till transmit".format(
+            aws_log_interval - aws_log_timer), end="\r")
 
         if (aws_log_timer == aws_log_interval):
             aws_log_timer = 0
