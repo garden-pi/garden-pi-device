@@ -101,6 +101,8 @@ while True:
         # update lights
         update_leds(moisture_sensor.value)
 
+        print(aws_log_timer)
+
         if (aws_log_timer == aws_log_interval):
             aws_log_timer = 0
             # plant name should correspond to plant in db
