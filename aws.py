@@ -101,7 +101,7 @@ while True:
 
         # plant name should correspond to plant in db
         report_data = {
-            "plant": plant_name
+            "plant": plant_name,
             "temperature": temp_humidity_value.temperature,
             "humidity": temp_humidity_value.humidity,
             "moisture": moisture_sensor.value
