@@ -74,16 +74,14 @@ def log(report_data):
 
 def update_iot_shadow(report_data):
   # data format for AWS IoT
-    data = {
-      state: {
-        reported: report_data
-      }
+  data = {
+    state: {
+      reported: report_data
     }
-    
-    # update IoT shadow
-    myDeviceShadow.shadowUpdate(
-      json.dumps(data),
-      myShadowUpdateCallback, 5)
+  }
+  
+  # update IoT shadow
+  myDeviceShadow.shadowUpdate(json.dumps(data), myShadowUpdateCallback, 5)
 
 # loop until control+C pressed!
 while True:
