@@ -91,6 +91,8 @@ def update_iot_shadow(report_data):
     myDeviceShadow.shadowUpdate(json.dumps(data), myShadowUpdateCallback, 5)
 
 
+aws_log_interval = 300
+aws_log_timer = aws_log_interval
 # loop until control+C pressed!
 while True:
     temp_humidity_value = temp_humidity_sensor.read()
@@ -99,19 +101,23 @@ while True:
         # update lights
         update_leds(moisture_sensor.value)
 
-        # plant name should correspond to plant in db
-        report_data = {
-            "plant": plant_name,
-            "temperature": temp_humidity_value.temperature,
-            "humidity": temp_humidity_value.humidity,
-            "moisture": moisture_sensor.value
-        }
+        if (aws_log_timer == aws_log_interval):
+            aws_log_timer = 0
+            # plant name should correspond to plant in db
+            report_data = {
+                "plant": plant_name,
+                "temperature": temp_humidity_value.temperature,
+                "humidity": temp_humidity_value.humidity,
+                "moisture": moisture_sensor.value
+            }
 
-        # Logging
-        log(report_data)
+            # Logging
+            log(report_data)
 
-        # update IoT
-        update_iot_shadow(report_data)
+            # update IoT
+            update_iot_shadow(report_data)
+
+        aws_log_timer += 1
 
         # Wait for this test value to be added.
-        time.sleep(10)
+        time.sleep(1)
