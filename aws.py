@@ -60,7 +60,7 @@ plant_name = sys.argv[1] or "default_plant"
 # setup devices
 green_led = LED(17)
 red_led = LED(22)
-# moisture_sensor = InputDevice(4)
+moisture_sensor = InputDevice(4)
 temp_humidity_sensor = dht11.DHT11(pin=23)
 
 
@@ -74,9 +74,9 @@ def update_leds(moisture):
 
 
 def log(report_data):
-    # print("Water sensor: ", report_data["moisture"])
-    print("Humidity: ", report_data["temperature"])
-    print("Temperature: ", report_data["humidity"])
+    print("Water sensor: ", report_data["moisture"])
+    print("Humidity %: ", report_data["humidity"])
+    print("Temperature C: ", report_data["temperature"])
 
 
 def update_iot_shadow(report_data):
@@ -97,14 +97,14 @@ while True:
     # prevent bad readings? this might be a wiring issue...
     if (temp_humidity_value.temperature > 0):
         # update lights
-        # update_leds(moisture_sensor.value)
+        update_leds(moisture_sensor.value)
 
         # plant name should correspond to plant in db
         report_data = {
             "plant": plant_name,
             "temperature": temp_humidity_value.temperature,
             "humidity": temp_humidity_value.humidity,
-            "moisture": 0
+            "moisture": moisture_sensor.value
         }
 
         # Logging
