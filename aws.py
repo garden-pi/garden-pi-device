@@ -39,7 +39,6 @@ def myShadowUpdateCallback(payload, responseStatus, token):
     print("payload = " + payload)
     print("responseStatus = " + responseStatus)
     print("token = " + token)
-    myShadowClient.disconnect()
 
 
 # Create, configure, and connect a shadow client.
@@ -47,9 +46,9 @@ myShadowClient = AWSIoTMQTTShadowClient(SHADOW_CLIENT)
 myShadowClient.configureEndpoint(HOST_NAME, 8883)
 myShadowClient.configureCredentials(ROOT_CA, PRIVATE_KEY,
                                     CERT_FILE)
-myShadowClient.configureConnectDisconnectTimeout(10)
-myShadowClient.configureMQTTOperationTimeout(5)
-# myShadowClient.connect()
+# myShadowClient.configureConnectDisconnectTimeout(10)
+# myShadowClient.configureMQTTOperationTimeout(5)
+myShadowClient.connect()
 
 # Create a programmatic representation of the shadow.
 myDeviceShadow = myShadowClient.createShadowHandlerWithName(
@@ -81,7 +80,6 @@ def log(report_data):
 
 
 def update_iot_shadow(report_data):
-    myShadowClient.connect()
     # data format for AWS IoT
     data = {
         "state": {
@@ -103,7 +101,7 @@ while True:
         # update lights
         update_leds(moisture_sensor.value)
 
-        print(f"{300 - aws_log_timer} seconds till transmit", end="\r")
+        print(f"{aws_log_interval - aws_log_timer} seconds till transmit", end="\r")
 
         if (aws_log_timer == aws_log_interval):
             aws_log_timer = 0
