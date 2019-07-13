@@ -74,9 +74,9 @@ def update_leds(moisture):
 
 
 def log(report_data):
-    print("Water sensor: ", report_data.moisture)
-    print("Humidity: ", report_data.temperature)
-    print("Temperature: ", report_data.humidity)
+    print("Water sensor: ", report_data["moisture"])
+    print("Humidity: ", report_data["temperature"])
+    print("Temperature: ", report_data["humidity"])
 
 
 def update_iot_shadow(report_data):
