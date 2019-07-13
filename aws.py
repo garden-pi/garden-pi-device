@@ -1,6 +1,6 @@
 from AWSIoTPythonSDK.MQTTLib import AWSIoTMQTTShadowClient
 import datetime, time, json
-import RPi.GPIO as GPIO
+from gpiozero import LED, InputDevice
 from packages.dht11 import dht11
 
 # A random programmatic shadow client ID.
@@ -49,35 +49,62 @@ myShadowClient.connect()
 myDeviceShadow = myShadowClient.createShadowHandlerWithName(
   SHADOW_HANDLER, True)
 
+# get plant name from ARGV
+plant_name = sys.argv[1] or "default_plant"
 
-# initialize GPIO
-GPIO.setwarnings(False)
-GPIO.setmode(GPIO.BCM)
-GPIO.cleanup()
+# setup devices
+green_led = LED(17)
+red_led = LED(22)
+moisture_sensor = InputDevice(4)
+temp_humidity_sensor = dht11.DHT11(pin=23)
 
-# read data using pin 17
-instance = dht11.DHT11(pin=17)
+# moisture indicator LED control
+def update_leds(moisture):
+  if (moisture == 1):
+	  green_led.on()
+	  red_led.off()
+  else:
+    green_led.off()
+    red_led.on()
 
-# Keep generating random test data until this script 
-# stops running.
-# To stop running this script, press Ctrl+C.
-while True:
-  result = instance.read()
-  temperature = result.temperature
-  humidity = result.humidity
+def log(report_data):
+  print("Water sensor: ", report_data.moisture)
+  print("Humidity: ", report_data.temperature)
+  print("Temperature: ", report_data.humidity)
 
-  data = {
-    state: {
-      reported: {
-        temperature: temperature,
-        humidity: humidity
+def update_iot_shadow(report_data):
+  # data format for AWS IoT
+    data = {
+      state: {
+        reported: report_data
       }
     }
-  }
-  
-  myDeviceShadow.shadowUpdate(
-    json.dumps(data),
-    myShadowUpdateCallback, 5)
+    
+    # update IoT shadow
+    myDeviceShadow.shadowUpdate(
+      json.dumps(data),
+      myShadowUpdateCallback, 5)
 
-  # Wait for this test value to be added.
-  time.sleep(10)
+# loop until control+C pressed!
+while True:
+	temp_humidity_value = temp_humidity_sensor.read()
+	# prevent bad readings? this might be a wiring issue...
+	if (temp_humidity_value.temperature > 0):
+    report_data = {
+      plant: "actual_rpi", # plant name should correspond to plant in db
+      temperature: temp_humidity_value.temperature,
+      humidity: temp_humidity_value.humidity,
+      moisture: moisture_sensor.value
+    }
+
+    # update lights
+		update_leds(moisture_sensor.value)
+
+		# Logging
+    log(report_data)
+    
+    # update IoT
+    update_iot_shadow(report_data)
+
+    # Wait for this test value to be added.
+    time.sleep(10)
