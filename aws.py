@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 from AWSIoTPythonSDK.MQTTLib import AWSIoTMQTTShadowClient
 from time import sleep
 import json
@@ -48,7 +50,7 @@ myShadowClient.configureEndpoint(HOST_NAME, 8883)
 myShadowClient.configureCredentials(ROOT_CA, PRIVATE_KEY, CERT_FILE)
 myShadowClient.configureConnectDisconnectTimeout(10)
 myShadowClient.configureMQTTOperationTimeout(5)
-myShadowClient.connect()
+# myShadowClient.connect()
 
 # Create a programmatic representation of the shadow.
 myDeviceShadow = myShadowClient.createShadowHandlerWithName(
