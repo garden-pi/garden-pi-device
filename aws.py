@@ -93,7 +93,7 @@ def update_iot_shadow(report_data):
     myDeviceShadow.shadowUpdate(json.dumps(data), myShadowUpdateCallback, 5)
 
 
-aws_log_interval = 60
+aws_log_interval = 300
 aws_log_timer = aws_log_interval
 # loop until control+C pressed!
 while True:
