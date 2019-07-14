@@ -4,7 +4,7 @@ import json
 import sys
 from gpiozero import LED, InputDevice
 from packages.dht11 import dht11
-import pdb
+# import pdb
 
 # A random programmatic shadow client ID.
 SHADOW_CLIENT = "myShadowClient2"
@@ -39,6 +39,7 @@ def myShadowUpdateCallback(payload, responseStatus, token):
     print("payload = " + payload)
     print("responseStatus = " + responseStatus)
     print("token = " + token)
+    myShadowClient.disconnect()
 
 
 # Create, configure, and connect a shadow client.
@@ -81,7 +82,7 @@ def log(report_data):
 
 
 def update_iot_shadow(report_data):
-    pdb.set_trace()
+    myShadowClient.connect()
     # data format for AWS IoT
     data = {
         "state": {
