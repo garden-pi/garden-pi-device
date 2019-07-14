@@ -1,10 +1,10 @@
 from AWSIoTPythonSDK.MQTTLib import AWSIoTMQTTShadowClient
-import datetime
-import time
+from time import sleep
 import json
 import sys
 from gpiozero import LED, InputDevice
 from packages.dht11 import dht11
+import pdb
 
 # A random programmatic shadow client ID.
 SHADOW_CLIENT = "myShadowClient2"
@@ -44,10 +44,9 @@ def myShadowUpdateCallback(payload, responseStatus, token):
 # Create, configure, and connect a shadow client.
 myShadowClient = AWSIoTMQTTShadowClient(SHADOW_CLIENT)
 myShadowClient.configureEndpoint(HOST_NAME, 8883)
-myShadowClient.configureCredentials(ROOT_CA, PRIVATE_KEY,
-                                    CERT_FILE)
-# myShadowClient.configureConnectDisconnectTimeout(10)
-# myShadowClient.configureMQTTOperationTimeout(5)
+myShadowClient.configureCredentials(ROOT_CA, PRIVATE_KEY, CERT_FILE)
+myShadowClient.configureConnectDisconnectTimeout(10)
+myShadowClient.configureMQTTOperationTimeout(5)
 myShadowClient.connect()
 
 # Create a programmatic representation of the shadow.
@@ -55,6 +54,7 @@ myDeviceShadow = myShadowClient.createShadowHandlerWithName(
     SHADOW_HANDLER, True)
 
 # get plant name from ARGV
+# plant name should correspond to plant in db
 plant_name = sys.argv[1] or "default_plant"
 
 # setup devices
@@ -74,12 +74,14 @@ def update_leds(moisture):
 
 
 def log(report_data):
+    print()
     print("Water sensor: ", report_data["moisture"])
     print("Humidity %: ", report_data["humidity"])
     print("Temperature C: ", report_data["temperature"])
 
 
 def update_iot_shadow(report_data):
+    pdb.set_trace()
     # data format for AWS IoT
     data = {
         "state": {
@@ -91,11 +93,12 @@ def update_iot_shadow(report_data):
     myDeviceShadow.shadowUpdate(json.dumps(data), myShadowUpdateCallback, 5)
 
 
-aws_log_interval = 300
+aws_log_interval = 60
 aws_log_timer = aws_log_interval
 # loop until control+C pressed!
 while True:
     temp_humidity_value = temp_humidity_sensor.read()
+
     # prevent bad readings? this might be a wiring issue...
     if (temp_humidity_value.temperature > 0):
         # update lights
@@ -106,7 +109,6 @@ while True:
 
         if (aws_log_timer == aws_log_interval):
             aws_log_timer = 0
-            # plant name should correspond to plant in db
             report_data = {
                 "plant": plant_name,
                 "temperature": temp_humidity_value.temperature,
@@ -123,4 +125,4 @@ while True:
         aws_log_timer += 1
 
         # Wait for this test value to be added.
-        time.sleep(1)
+        sleep(1)
