@@ -66,6 +66,7 @@ red_led = LED(22)
 moisture_sensor = InputDevice(4)
 temp_humidity_sensor = dht11.DHT11(pin=23)
 
+run = True
 
 def update_leds(moisture):
     if (moisture == 1):
@@ -84,7 +85,6 @@ def log(report_data):
 
 
 def update_iot_shadow(report_data):
-    #myShadowClient.connect()
     # data format for AWS IoT
     data = {
         "state": {
@@ -93,13 +93,16 @@ def update_iot_shadow(report_data):
     }
 
     # update IoT shadow
-    myDeviceShadow.shadowUpdate(json.dumps(data), myShadowUpdateCallback, 5)
-
+    try:
+        myDeviceShadow.shadowUpdate(json.dumps(data), myShadowUpdateCallback, 5)
+    except:
+        print("AWS update error")
+        run = False
 
 aws_log_interval = 60
 aws_log_timer = aws_log_interval
 # loop until control+C pressed!
-while True:
+while run:
     temp_humidity_value = temp_humidity_sensor.read()
 
     # prevent bad readings? this might be a wiring issue...
