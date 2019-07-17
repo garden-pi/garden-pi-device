@@ -1,3 +1,6 @@
 /aws
 
+*.log
+*.out
+
 __pycache__
