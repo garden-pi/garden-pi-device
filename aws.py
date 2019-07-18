@@ -4,7 +4,7 @@ from AWSIoTPythonSDK.MQTTLib import AWSIoTMQTTShadowClient
 from time import sleep
 import json
 import sys
-from gpiozero import LED, InputDevice
+from gpiozero import InputDevice
 from packages.dht11 import dht11
 # import pdb
 
@@ -61,21 +61,8 @@ myDeviceShadow = myShadowClient.createShadowHandlerWithName(
 plant_name = sys.argv[1] or "default_plant"
 
 # setup devices
-green_led = LED(17)
-red_led = LED(22)
 moisture_sensor = InputDevice(4)
 temp_humidity_sensor = dht11.DHT11(pin=23)
-
-run = True
-
-def update_leds(moisture):
-    if (moisture == 1):
-        green_led.on()
-        red_led.off()
-    else:
-        green_led.off()
-        red_led.on()
-
 
 def log(report_data):
     print()
@@ -97,38 +84,26 @@ def update_iot_shadow(report_data):
         myDeviceShadow.shadowUpdate(json.dumps(data), myShadowUpdateCallback, 5)
     except:
         print("AWS update error")
-        run = False
 
-aws_log_interval = 60
-aws_log_timer = aws_log_interval
-# loop until control+C pressed!
-while run:
+valid_reading = False
+
+while valid_reading != True:
     temp_humidity_value = temp_humidity_sensor.read()
 
     # prevent bad readings? this might be a wiring issue...
     if (temp_humidity_value.temperature > 0):
-        # update lights
-        update_leds(moisture_sensor.value)
+        valid_reading = True
 
-        print("{0} seconds till transmit".format(
-            aws_log_interval - aws_log_timer), end="\r")
+        aws_log_timer = 0
+        report_data = {
+            "plant": plant_name,
+            "temperature": temp_humidity_value.temperature,
+            "humidity": temp_humidity_value.humidity,
+            "moisture": moisture_sensor.value
+        }
 
-        if (aws_log_timer == aws_log_interval):
-            aws_log_timer = 0
-            report_data = {
-                "plant": plant_name,
-                "temperature": temp_humidity_value.temperature,
-                "humidity": temp_humidity_value.humidity,
-                "moisture": moisture_sensor.value
-            }
+        # Logging
+        log(report_data)
 
-            # Logging
-            log(report_data)
-
-            # update IoT
-            update_iot_shadow(report_data)
-
-        aws_log_timer += 1
-
-        # Wait for this test value to be added.
-        sleep(1)
+        # update IoT
+        update_iot_shadow(report_data)
