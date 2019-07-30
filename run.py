@@ -3,9 +3,10 @@ import time
 import sys
 import os
 import requests 
-from dotenv import load_dotenv
 from gpiozero import InputDevice
 from packages.dht11 import dht11
+from dotenv import load_dotenv
+load_dotenv()
 
 API_URL = "https://p71p6yuahb.execute-api.us-east-2.amazonaws.com/Staging/GardenPiUpdate"
 API_KEY = os.getenv("API_GATEWAY_KEY")
@@ -32,8 +33,6 @@ def api_post(payload):
           headers={'x-api-key': API_KEY}
         )
         print(r.text)
-
-        valid_reading = True
     except:
         print("AWS update error")
 
@@ -44,6 +43,8 @@ while valid_reading != True:
 
     # prevent bad readings? this might be a wiring issue...
     if (temp_humidity_value.temperature > 0):
+        valid_reading = True
+        
         payload = {
             "plant": plant_name,
             "temperature": temp_humidity_value.temperature,
