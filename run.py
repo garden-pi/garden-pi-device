@@ -11,9 +11,8 @@ load_dotenv()
 API_URL = "https://p71p6yuahb.execute-api.us-east-2.amazonaws.com/Staging/GardenPiUpdate"
 API_KEY = os.getenv("API_GATEWAY_KEY")
 
-# get plant name from ARGV
 # plant name should correspond to plant in db
-plant_name = sys.argv[1] or "default_plant"
+PLANT_NAME = os.getenv("PLANT_NAME")
 
 # setup devices
 moisture_sensor = InputDevice(4)
@@ -46,7 +45,7 @@ while valid_reading != True:
         valid_reading = True
         
         payload = {
-            "plant": plant_name,
+            "plant": PLANT_NAME,
             "temperature": temp_humidity_value.temperature,
             "humidity": temp_humidity_value.humidity,
             "moisture": moisture_sensor.value,

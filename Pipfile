@@ -3,12 +3,18 @@ name = "pypi"
 url = "https://pypi.org/simple"
 verify_ssl = true
 
+[scripts]
+setup = "python3 setup.py"
+test = "python3 test.py"
+update = "python3 run.py"
+
 [dev-packages]
 
 [packages]
 python-dotenv = "*"
 gpiozero = "*"
 requests = "*"
+python-crontab = "*"
 
 [requires]
 python_version = "3.5"

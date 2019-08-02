@@ -1,8 +1,11 @@
-.env
+.env*
 
 *.log
 *.out
 
 __pycache__
 
-Pipfile.lock
+.vscode
+
+*.sh
+*.log
