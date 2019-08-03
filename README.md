@@ -3,7 +3,6 @@
 Requirements: 
 - pip
 - pipenv
-- Python 3.5
 
 Setup:
 - Run `$ pipenv install` to install required packages in virtual enviroment.

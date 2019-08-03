@@ -15,6 +15,3 @@ python-dotenv = "*"
 gpiozero = "*"
 requests = "*"
 python-crontab = "*"
-
-[requires]
-python_version = "3.5"
